@@ -1,0 +1,116 @@
+/* Google Fonts */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
+
+/* Reset & Global Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  background: linear-gradient(135deg, #d4eaff, #b5d4ff);
+  color: var(--text-dark);
+  min-height: 100vh;
+  padding: 20px;
+}
+
+/* Navbar */
+.navbar {
+  background: rgba(255, 255, 255, 0.2) !important;
+  backdrop-filter: blur(10px);
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  padding: 10px 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand,
+.navbar-nav .nav-link {
+  color: var(--primary-color) !important;
+  font-weight: 600;
+  transition: all 0.3s ease-in-out;
+}
+
+.navbar-nav .nav-link:hover {
+  color: var(--primary-light) !important;
+}
+
+/* Member Name */
+.member-name {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--primary-color);
+  text-shadow: 0 0 12px rgba(0, 255, 255, 0.5);
+}
+
+/* Form Container */
+form {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  border-radius: 15px;
+  box-shadow: 0 4px 12px rgba(6, 4, 4, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+form:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Form Inputs */
+form input,
+form select {
+  background: rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: var(--text-dark);
+}
+
+form input:focus,
+form select:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 10px rgba(0, 204, 201, 0.3);
+}
+
+/* Submit Button */
+form button {
+  background: var(--primary-color);
+  color: white;
+  transition: all 0.3s ease-in-out;
+}
+
+form button:hover {
+  background: var(--primary-light);
+  transform: scale(1.05);
+}
+
+/* Radio Button Container */
+.radio-container {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.radio-container input[type="radio"] {
+  margin-right: 10px;
+}
+
+.radio-container label {
+  margin-right: 20px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .member-name {
+    font-size: 24px;
+  }
+
+  form {
+    padding: 15px;
+  }
+}

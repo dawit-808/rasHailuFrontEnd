@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Coach Registration</title>
+    <link rel="stylesheet" href="coach-registration.css" />
+  </head>
+  <body>
+    <h1>Coach Registration DashBoard</h1>
+    <!-- Toggle Button -->
+    <button id="toggleFormBtn" class="toggle-btn">Register New Coach</button>
+
+    <!-- Form -->
+    <form id="coachForm" style="display: none">
+      <h2>Register as a Coach</h2>
+
+      <!-- Image Upload -->
+      <label>Profile Picture*</label>
+      <input
+        type="file"
+        id="imageUpload"
+        accept="image/*"
+        required
+      />
+      <input
+        type="hidden"
+        id="imageUrl"
+        name="imageUrl"
+      />
+
+      <label>Full Name*</label>
+      <input
+        type="text"
+        name="fullName"
+        placeholder="Enter full name"
+        required
+      />
+
+      <label>Phone Number*</label>
+      <input
+        type="tel"
+        name="phoneNumber"
+        placeholder="Enter phone number"
+        required
+      />
+
+      <label>Training Type*</label>
+      <select name="trainingType" required>
+        <option value="Aerobics">Aerobics</option>
+        <option value="Machine">Machine</option>
+      </select>
+
+      <label>Training Schedule (Select multiple)*</label>
+      <div class="checkbox-group">
+        <label class="checkbox-label">
+          <input
+            type="checkbox"
+            name="trainingTime"
+            value="Monday, Wednesday, Friday - Morning"
+          />
+          Monday, Wednesday, Friday - Morning
+        </label>
+        <label class="checkbox-label">
+          <input
+            type="checkbox"
+            name="trainingTime"
+            value="Monday, Wednesday, Friday - Night"
+          />
+          Monday, Wednesday, Friday - Night
+        </label>
+        <label class="checkbox-label">
+          <input
+            type="checkbox"
+            name="trainingTime"
+            value="Tuesday, Thursday, Saturday - Morning"
+          />
+          Tuesday, Thursday, Saturday - Morning
+        </label>
+        <label class="checkbox-label">
+          <input
+            type="checkbox"
+            name="trainingTime"
+            value="Tuesday, Thursday, Saturday - Night"
+          />
+          Tuesday, Thursday, Saturday - Night
+        </label>
+      </div>
+
+      <button type="submit">Register Coach</button>
+    </form>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>No</th>
+            <th>Profile Picture</th>
+            <th>Name</th>
+            <th>Phone Number</th>
+            <th>Training Type</th>
+            <th>Training Schedule</th>
+            <th>Remove</th>
+          </tr>
+        </thead>
+        <tbody id="coach-list"></tbody>
+      </table>
+    </div>
+
+    <script src="firebase.js"></script>
+    <script src="coach-registration.js" type="module"></script>
+  </body>
+</html>

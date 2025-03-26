@@ -1,0 +1,116 @@
+/* Google Font */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap");
+
+/* Reset & Global Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  background: linear-gradient(135deg, #d4eaff, #b5d4ff);
+  color: var(--text-dark);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+/* Auth Container */
+.auth-container {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  padding: 40px;
+  border-radius: 15px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Title */
+.auth-container h1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--primary-color);
+  text-shadow: 0 0 12px rgba(0, 255, 255, 0.5);
+}
+
+/* Form Group */
+.form-group label {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text-dark);
+}
+
+/* Input Fields */
+.form-control {
+  background: rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: var(--text-dark);
+  font-size: 16px;
+  padding: 12px;
+  border-radius: 8px;
+  transition: 0.3s ease-in-out;
+}
+
+.form-control:focus {
+  background: rgba(255, 255, 255, 0.4);
+  border-color: var(--primary-color);
+  box-shadow: 0 0 10px rgba(0, 204, 201, 0.3);
+}
+
+.btn-primary:hover {
+  background: var(--primary-light);
+  transform: scale(1.02);
+}
+
+/* Error Message */
+.error-message {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--error-color);
+  text-shadow: 0 0 10px rgba(255, 75, 92, 0.7);
+}
+
+/* Loading Spinner */
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+}
+
+.spinner {
+  border: 8px solid rgba(70, 237, 255, 0.3);
+  border-top: 8px solid var(--primary-color);
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1.5s linear infinite;
+}
+
+/* Spinner Animation */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Success Message */
+.success-message {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--secondary-color);
+  text-shadow: 0 0 10px rgba(40, 167, 69, 0.7);
+}
