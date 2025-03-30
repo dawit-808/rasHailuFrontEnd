@@ -23,7 +23,7 @@ document.getElementById("signin-form").addEventListener("submit", async (e) => {
     successMessage.textContent = "Login successful! Redirecting...";
     successMessage.style.display = "block"; // Show success message
     setTimeout(() => {
-      window.location.href = "dashboard.html"; // Redirect to dashboard after a delay
+      window.location.href = "./dashBoard/dashBoard.html"; // Redirect to dashboard after a delay
     }, 1500); // Delay redirect to allow user to see the success message
   } catch (error) {
     errorMessage.textContent = "Invalid email or password.";

@@ -1,0 +1,36 @@
+// src/modules/dom.js
+export const elements = {
+  filters: {
+    payment: document.getElementById("paymentFilter"),
+    trainingType: document.getElementById("trainingTypeFilter"),
+    timeOfDay: document.getElementById("timeOfDayFilter"),
+    days: document.getElementById("daysFilter"),
+    clear: document.getElementById("clearFilters"),
+    loader: document.getElementById("filterLoader"),
+  },
+  form: {
+    name: document.getElementById("name"),
+    fname: document.getElementById("fname"),
+    memberId: document.getElementById("memberIdInput"),
+    imageUpload: document.getElementById("imageUploadInput"),
+    imageUrl: document.getElementById("imageUrlInput"),
+    form: document.getElementById("registration-form"),
+    trainingType: document.querySelectorAll("input[name='trainingType']"),
+    trainingTime: document.querySelectorAll("input[name='trainingTime']"),
+  },
+  list: document.getElementById("member-list"),
+  search: document.getElementById("search-input"),
+  stats: {
+    total: document.querySelector(".js-total-members"),
+    paid: document.querySelector(".js-paid-members"),
+    warning: document.querySelector(".js-warning-members"),
+    unpaid: document.querySelector(".js-unpaid-members"),
+    aerobics: document.querySelector(".js-aerobics-members"),
+    machine: document.querySelector(".js-machine-members"),
+    both: document.querySelector(".js-both-members"),
+    morningMWF: document.querySelector(".js-morning-mwf-members"),
+    nightMWF: document.querySelector(".js-night-mwf-members"),
+    morningTTS: document.querySelector(".js-morning-tts-members"),
+    nightTTS: document.querySelector(".js-night-tts-members"),
+  },
+};
