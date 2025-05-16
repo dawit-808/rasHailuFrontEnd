@@ -63,7 +63,7 @@ function createMemberRow(member, index) {
         </button>
       </td>
       <td>
-        <a target="_blank" href="../../paymentHistory/payment-history.html?id=${member.id.replace(
+        <a target="_blank" href="../paymentHistory/payment-history.html?id=${member.id.replace(
           /\//g,
           "-"
         )}" class="payment-history-link">

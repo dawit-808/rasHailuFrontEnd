@@ -40,3 +40,29 @@ body {
   tbody tr:nth-child(even) {
     background: rgba(255, 255, 255, 0.3);
   }
+  /* remove button  */
+  #remove-history-btn {
+    background: linear-gradient(135deg, #ff416c, #ff4b2b);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    display: block;
+    margin: 20px auto;
+    box-shadow: 0px 4px 10px rgba(255, 65, 108, 0.3);
+  }
+  
+  #remove-history-btn:hover {
+    background: linear-gradient(135deg, #ff4b2b, #ff416c);
+    transform: scale(1.05);
+  }
+  
+  #remove-history-btn:active {
+    transform: scale(0.95);
+    box-shadow: 0px 2px 5px rgba(255, 65, 108, 0.5);
+  }
+  

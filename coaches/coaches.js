@@ -9,11 +9,11 @@ console.log("Member ID:", memberId);
 if (memberId) {
   // Update the Home link in the navbar
   const homeLink = document.getElementById("homeLink");
-  homeLink.href = `member-details.html?id=${memberId}`;
+  homeLink.href = `../memberDetail/member-details.html?id=${memberId}`;
 
   // Update the Health Status link in the navbar
   const healthStatusLink = document.getElementById("healthStatusLink");
-  healthStatusLink.href = `health-status.html?id=${memberId}`;
+  healthStatusLink.href = `../healthStatus/health-status.html?id=${memberId}`;
 
   const healthRef = ref(db, `members/${memberId}/healthData`);
   get(healthRef)

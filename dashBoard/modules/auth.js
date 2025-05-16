@@ -6,7 +6,7 @@ export function initializeAuth() {
     if (user) {
       document.body.style.display = "block";
     } else {
-      window.location.href = "../../index.html";
+      window.location.href = "../index.html";
     }
   });
 }
@@ -17,7 +17,7 @@ export function setupLogout() {
       await signOut(auth);
       localStorage.clear();
       sessionStorage.clear();
-      window.location.href = "../../index.html";
+      window.location.href = "../index.html";
     } catch (error) {
       console.error("Logout failed:", error);
     }

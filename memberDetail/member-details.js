@@ -73,7 +73,8 @@ if (memberId) {
 
       // Generate QR Code with the member's profile URL
       generateQRCode(
-        window.location.origin + `/member-details.html?id=${memberId}`
+        window.location.origin +
+          `/memberDetail/member-details.html?id=${memberId}`
       );
 
       // Add download functionality
@@ -131,17 +132,62 @@ function setupDownloadButton() {
     const paymentStatus = document.querySelector(".pay");
     const paymentDate = document.querySelector(".pay-date");
     const editBtn = document.getElementById("editMemberBtn");
+    const profileCard = document.querySelector(".profile-card");
 
-    // Hide elements temporarily
+    // Hide UI elements temporarily
     [paymentStatus, paymentDate, downloadBtn, editBtn].forEach((el) => {
       if (el) el.style.visibility = "hidden";
     });
 
-    html2canvas(document.querySelector(".profile-card"), {
+    // Increase font size for text inside profile card
+    const originalFontSize = profileCard.style.fontSize;
+    profileCard.style.fontSize = "18px"; // Adjust this value as needed
+
+    // Determine background color based on training type
+    const trainingTypeEl = document.querySelector(".training-type");
+    let bgColor = "#ffffff"; // Default white
+
+    if (trainingTypeEl) {
+      const type = trainingTypeEl.textContent.toLowerCase();
+      if (type.includes("aerobics") && type.includes("machine")) {
+        bgColor = "#d9c9ff"; // Light purple for both
+      } else if (type.includes("aerobics")) {
+        bgColor = "#ccffcc"; // Light green
+      } else if (type.includes("machine")) {
+        bgColor = "#cce5ff"; // Light blue
+      }
+    }
+
+    // Temporarily remove background from card
+    const originalBg = profileCard.style.background;
+    profileCard.style.background = "transparent";
+
+    // Use html2canvas to render the profileCard
+    html2canvas(profileCard, {
       allowTaint: true,
       useCORS: true,
+      backgroundColor: null,
+      scrollX: 0, // No horizontal scrolling offset
+      scrollY: 0, // No vertical scrolling offset
+      x: 0, // Capture from the leftmost point
+      y: 0, // Capture from the topmost point
+      width: profileCard.offsetWidth, // Capture the full width
+      height: profileCard.offsetHeight, // Capture the full height
     }).then((canvas) => {
-      const imgData = canvas.toDataURL("image/png");
+      const resizedCanvas = document.createElement("canvas");
+      resizedCanvas.width = 600;
+      resizedCanvas.height = 300;
+      const ctx = resizedCanvas.getContext("2d");
+
+      // Set background color and fill
+      ctx.fillStyle = bgColor;
+      ctx.fillRect(0, 0, resizedCanvas.width, resizedCanvas.height);
+
+      // Draw original canvas over the background color
+      ctx.drawImage(canvas, 0, 0, 600, 400);
+
+      // Convert canvas to image
+      const imgData = resizedCanvas.toDataURL("image/png");
 
       const link = document.createElement("a");
       link.href = imgData;
@@ -150,10 +196,14 @@ function setupDownloadButton() {
       link.click();
       document.body.removeChild(link);
 
-      // Restore visibility after download
+      // Restore original font size and visibility
+      profileCard.style.fontSize = originalFontSize;
+
+      // Restore visibility and background of profile card
       [paymentStatus, paymentDate, downloadBtn, editBtn].forEach((el) => {
         if (el) el.style.visibility = "visible";
       });
+      profileCard.style.background = originalBg;
     });
   });
 }

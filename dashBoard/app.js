@@ -9,7 +9,52 @@ import {
 } from "./modules/firebase.js";
 import { toggleFormDisplay, highlightAndScrollToMember } from "./modules/ui.js";
 import { initializeAuth, setupLogout } from "./modules/auth.js";
+import { setupCameraControls } from "./modules/camera.js";
 
+// Function to download Excel file
+function downloadExcel() {
+  const table = document.getElementById("member-list");
+  if (!table) {
+    alert("Member list table not found!");
+    return;
+  }
+
+  // Prepare array of objects for Excel
+  const rows = [];
+  // Iterate over table rows (skip the header row)
+  const trs = table.querySelectorAll("tr");
+
+  // Header columns for Excel
+  rows.push([
+    "Member ID",
+    "Name",
+    "Father Name",
+    "Training Type",
+    "Training Schedule",
+  ]);
+
+  trs.forEach((tr) => {
+    const tds = tr.querySelectorAll("td");
+    if (tds.length === 9) {
+      // row with member data
+      const memberId = tds[1].innerText.trim();
+      const name = tds[2].innerText.trim();
+      const fatherName = tds[3].innerText.trim();
+      const trainingType = tds[4].innerText.trim();
+      const trainingSchedule = tds[5].innerText.trim();
+
+      rows.push([memberId, name, fatherName, trainingType, trainingSchedule]);
+    }
+  });
+
+  // Create worksheet and workbook
+  const ws = XLSX.utils.aoa_to_sheet(rows);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Members");
+
+  // Export to Excel file
+  XLSX.writeFile(wb, "RasHailuGym_Members.xlsx");
+}
 // Initialize application
 function initApp() {
   initializeAuth();
@@ -18,6 +63,16 @@ function initApp() {
   setupEventListeners();
   applyFilters();
   watchMembers(applyFilters);
+
+  // Setup camera capture UI and logic
+  setupCameraControls({
+    startCameraBtnId: "startCameraBtn",
+    captureBtnId: "captureBtn",
+    cancelCameraBtnId: "cancelCameraBtn",
+    videoPreviewId: "videoPreview",
+    imageUploadInputId: "imageUploadInput",
+    imageUrlInputId: "imageUrlInput",
+  });
 }
 
 // Setup all event listeners
@@ -70,3 +125,4 @@ window.togglePaymentStatus = togglePaymentStatus;
 window.deleteMember = deleteMember;
 window.toggleFormDisplay = toggleFormDisplay;
 window.searchMembers = searchMembers;
+window.downloadExcel = downloadExcel;

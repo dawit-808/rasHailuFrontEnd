@@ -21,7 +21,11 @@ export async function registerMember(member) {
 
 export async function togglePaymentStatus(id, currentStatus) {
   if (
-    !confirm(currentStatus === "Unpaid" ? "Mark as Paid?" : "Mark as Unpaid?")
+    !confirm(
+      currentStatus === "Unpaid" || currentStatus === "Warning"
+        ? "Mark as Paid?"
+        : "Mark as Unpaid?"
+    )
   )
     return;
 
@@ -37,13 +41,18 @@ export async function togglePaymentStatus(id, currentStatus) {
       paymentTimestamp,
     });
 
-    await set(ref(db, `members/${id}/paymentHistory/${paymentTimestamp}`), {
-      timestamp: paymentTimestamp,
-    });
+    // Store payment history only if status is changed from "Unpaid" or "Warning" to "Paid"
+    if (currentStatus === "Unpaid" || currentStatus === "Warning") {
+      await set(ref(db, `members/${id}/paymentHistory/${paymentTimestamp}`), {
+        timestamp: paymentTimestamp,
+      });
+    }
   } catch (error) {
     console.error("Payment error:", error);
   }
 }
+
+
 
 export async function deleteMember(id) {
   if (!confirm("Are you sure you want to delete this member?")) return;
