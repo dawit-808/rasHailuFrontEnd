@@ -1,4 +1,3 @@
-// src/modules/ui.js
 import { elements } from "./dom.js";
 import { updateStatistics } from "./statistics.js";
 
@@ -46,35 +45,37 @@ function createMemberRow(member, index) {
     <tr>
       <td>${index + 1}</td>
       <td>${member.id}</td>
-      <td><a target="_blank" href="../memberDetail/member-details.html?id=${member.id.replace(
-        /\//g,
-        "-"
-      )}">${member.name}</a></td>
+      <td>
+        <a target="_blank" href="../memberDetail/member-details.html?id=${
+          member.firebaseKey
+        }">
+          ${member.name}
+        </a>
+      </td>
       <td>${member.fname}</td>
       <td>${trainingTypeDisplay}</td>
       <td>${trainingTimeDisplay}</td>
       <td>
-        <button onclick="window.togglePaymentStatus('${member.id.replace(
-          /\//g,
-          "-"
-        )}', '${member.paymentStatus}')"
+        <button onclick="window.togglePaymentStatus('${member.firebaseKey}', '${
+    member.paymentStatus
+  }')"
           class="js-payment payment-status ${paymentStatusClass}">
           ${member.paymentStatus}
         </button>
       </td>
       <td>
-        <a target="_blank" href="../paymentHistory/payment-history.html?id=${member.id.replace(
-          /\//g,
-          "-"
-        )}" class="payment-history-link">
+        <a target="_blank" href="../paymentHistory/payment-history.html?id=${
+          member.firebaseKey
+        }" class="payment-history-link">
           ${lastPayment}
         </a>
       </td>
       <td>
-        <button class="delete-btn" onclick="window.deleteMember('${member.id.replace(
-          /\//g,
-          "-"
-        )}')">Delete</button>
+        <button class="delete-btn" onclick="window.deleteMember('${
+          member.firebaseKey
+        }')">
+          Delete
+        </button>
       </td>
     </tr>`;
 }
