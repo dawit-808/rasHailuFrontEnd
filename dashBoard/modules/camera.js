@@ -1,4 +1,5 @@
 let videoStream = null;
+let isPhotoCaptured = false;
 
 export function setupCameraControls({
   startCameraBtnId,
@@ -29,11 +30,12 @@ export function setupCameraControls({
 
   startCameraBtn.addEventListener("click", startCamera);
   captureBtn.addEventListener("click", capturePhoto);
-  cancelCameraBtn.addEventListener("click", cancelCamera);
+  cancelCameraBtn.addEventListener("click", handleCancelOrRetry);
 
   imageUploadInput.addEventListener("change", () => {
     stopCamera();
     imageUrlInput.value = ""; // Clear base64 image when user uploads a file
+    resetTryAgainButton(); // Reset button if coming from upload
   });
 
   async function startCamera() {
@@ -62,6 +64,8 @@ export function setupCameraControls({
       videoPreview.style.display = "block";
       captureBtn.style.display = "inline-block";
       imageUploadInput.style.display = "none";
+      isPhotoCaptured = false;
+      cancelCameraBtn.textContent = "Cancel";
     } catch (err) {
       alert("Camera access denied or not available.");
       console.error(err);
@@ -89,6 +93,10 @@ export function setupCameraControls({
     captureBtn.style.display = "none";
     imageUploadInput.style.display = "block";
 
+    // Change cancel button to "Try Again"
+    cancelCameraBtn.textContent = "Try Again";
+    isPhotoCaptured = true;
+
     alert("Photo captured. It will be saved with the member data.");
   }
 
@@ -99,14 +107,34 @@ export function setupCameraControls({
     }
   }
 
+  function handleCancelOrRetry() {
+    if (isPhotoCaptured) {
+      // Reset for new capture
+      imageUrlInput.value = "";
+      const preview = document.getElementById("imagePreview");
+      preview.src = "";
+      preview.style.display = "none";
+      startCamera();
+    } else {
+      cancelCamera();
+    }
+  }
+
   function cancelCamera() {
     stopCamera();
     videoPreview.style.display = "none";
     captureBtn.style.display = "none";
     imageUploadInput.style.display = "block";
+    resetTryAgainButton();
+  }
+
+  function resetTryAgainButton() {
+    cancelCameraBtn.textContent = "Cancel";
+    isPhotoCaptured = false;
   }
 }
-//image preview
+
+// Image preview from file
 document
   .getElementById("imageUploadInput")
   .addEventListener("change", function (event) {
