@@ -10,6 +10,28 @@ import {
 import { toggleFormDisplay, highlightAndScrollToMember } from "./modules/ui.js";
 import { initializeAuth, setupLogout } from "./modules/auth.js";
 import { setupCameraControls } from "./modules/camera.js";
+import { getMembers } from "./modules/firebase.js";
+
+// download all members data
+function downloadJSON(data, filename = "members.json") {
+  const blob = new Blob([JSON.stringify(data, null, 2)], {
+    type: "application/json",
+  });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+async function handleDownloadMembers() {
+  const members = await getMembers();
+  downloadJSON(members);
+}
 
 // Function to download Excel file
 function downloadExcel() {
@@ -126,3 +148,4 @@ window.deleteMember = deleteMember;
 window.toggleFormDisplay = toggleFormDisplay;
 window.searchMembers = searchMembers;
 window.downloadExcel = downloadExcel;
+window.downloadMembers = handleDownloadMembers;
