@@ -133,15 +133,18 @@ function setupDownloadButton() {
     const paymentDate = document.querySelector(".pay-date");
     const editBtn = document.getElementById("editMemberBtn");
     const profileCard = document.querySelector(".profile-card");
+    const trainingTime = document.querySelector(".training-date");
 
     // Hide UI elements temporarily
-    [paymentStatus, paymentDate, downloadBtn, editBtn].forEach((el) => {
-      if (el) el.style.visibility = "hidden";
-    });
+    [paymentStatus, paymentDate, downloadBtn, editBtn, trainingTime].forEach(
+      (el) => {
+        if (el) el.style.visibility = "hidden";
+      }
+    );
 
     // Increase font size for text inside profile card
     const originalFontSize = profileCard.style.fontSize;
-    profileCard.style.fontSize = "18px";
+    profileCard.classList.add("download-mode");
 
     // Determine background color based on training type
     const trainingTypeEl = document.querySelector(".training-type");
@@ -167,17 +170,13 @@ function setupDownloadButton() {
 
     // Use html2canvas to render the profileCard
     html2canvas(profileCard, {
+      scale: 4,
       allowTaint: true,
       useCORS: true,
       backgroundColor: null,
       scrollX: 0,
       scrollY: 0,
-      x: 0,
-      y: 0,
-      width: profileCard.offsetWidth,
-      height: profileCard.offsetHeight,
     }).then((canvas) => {
-      // Target ID card size: 600 x 378 pixels (approx wallet-size)
       const cardWidth = 600;
       const cardHeight = 378;
 
@@ -186,11 +185,11 @@ function setupDownloadButton() {
       resizedCanvas.height = cardHeight;
       const ctx = resizedCanvas.getContext("2d");
 
-      // Set background color and fill
+      // Background
       ctx.fillStyle = bgColor;
       ctx.fillRect(0, 0, cardWidth, cardHeight);
 
-      // Draw original canvas onto resized canvas (centered)
+      // Scale & center the high-res canvas
       const scale = Math.min(
         cardWidth / canvas.width,
         cardHeight / canvas.height
@@ -202,24 +201,23 @@ function setupDownloadButton() {
 
       ctx.drawImage(canvas, xOffset, yOffset, scaledWidth, scaledHeight);
 
-      // Convert canvas to image
       const imgData = resizedCanvas.toDataURL("image/png");
       const link = document.createElement("a");
       link.href = imgData;
-
-      // Use fallback if memberId isn't declared
       const memberId = window.memberId || "member";
-
       link.download = `id-card-${memberId}.png`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
 
-      // Restore font size and visibility
+      // Restore UI
       profileCard.style.fontSize = originalFontSize;
-      [paymentStatus, paymentDate, downloadBtn, editBtn].forEach((el) => {
-        if (el) el.style.visibility = "visible";
-      });
+      [paymentStatus, paymentDate, downloadBtn, editBtn, trainingTime].forEach(
+        (el) => {
+          if (el) el.style.visibility = "visible";
+        }
+      );
+      profileCard.classList.remove("download-mode");
       profileCard.style.background = originalBg;
     });
   });

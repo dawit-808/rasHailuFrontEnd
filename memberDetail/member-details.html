@@ -49,7 +49,7 @@
     <!-- Member Profile Card -->
     <main class="container mt-5">
       <div class="row justify-content-center">
-        <div id="id-card" class="profile-card p-4">
+        <div id="id-card" class="profile-card">
           <!-- Head Section: Logos and Gym Name -->
           <div class="head row align-items-center mb-4">
             <div class="logo1 col-2 text-center">
@@ -74,11 +74,19 @@
           </div>
           <hr />
 
-          <!-- Edit Button -->
-          <div class="text-center mb-4">
-            <button id="editMemberBtn" class="btn btn-warning">
-              Edit Member
-            </button>
+          <div class="btns">
+            <!-- Download Button -->
+            <div class="text-center mb-2">
+              <button id="downloadBtn" class="btn btn-primary">
+                Download ID Card
+              </button>
+            </div>
+            <!-- Edit Button -->
+            <div class="text-center mb-2">
+              <button id="editMemberBtn" class="btn btn-warning">
+                Edit Member
+              </button>
+            </div>
           </div>
 
           <!-- Form Container (initially hidden) -->
@@ -91,7 +99,7 @@
               <img
                 src="default-image.jpg"
                 alt="Profile Image"
-                class="profile-img img-fluid rounded-circle mb-3 mx-auto"
+                class="profile-img img-fluid mb-3"
               />
               <h4>
                 <strong>ID:</strong>
@@ -104,49 +112,41 @@
             <!-- Middle Section: Details -->
             <div class="col-md-5">
               <div class="profile-details">
-                <h5>
+                <p>
                   <strong>Training Type:</strong>
                   <span class="training-type">******</span>
-                </h5>
-                <h5>
-                  <strong>Training Time:</strong>
-                  <span class="training-time">*****</span>
-                </h5>
-                <h5>
+                </p>
+                <p>
                   <strong>Phone Number:</strong>
                   <span class="phone-number">*****</span>
-                </h5>
-                <h5>
+                </p>
+                <p>
                   <strong>Emergency Contact:</strong>
                   <span class="emergency-contact">*****</span>
-                </h5>
-                <h5>
-                  <strong>Emergency Contact Phone:</strong>
+                </p>
+                <p>
+                  <strong>Emergency Phone:</strong>
                   <span class="emergency-phone">*****</span>
-                </h5>
-                <h5 class="pay">
+                </p>
+                <p class="training-date">
+                  <strong>Training Time:</strong>
+                  <span class="training-time">*****</span>
+                </p>
+                <p class="pay">
                   <strong>Payment Status:</strong>
                   <span id="payment" class="payment-status paid">****</span>
-                </h5>
-                <h5 class="pay-date">
+                </p>
+                <p class="pay-date">
                   <strong>Last Payment Date:</strong>
                   <span class="payment-date">*****</span>
-                </h5>
+                </p>
               </div>
             </div>
 
             <!-- Right Section: QR Code -->
             <div class="col-md-3 text-center">
-              <p><strong>QR Code:</strong></p>
               <div id="qrcode" class="mx-auto"></div>
             </div>
-          </div>
-
-          <!-- Download Button -->
-          <div class="text-center mt-4">
-            <button id="downloadBtn" class="btn btn-primary">
-              Download ID Card
-            </button>
           </div>
         </div>
       </div>
