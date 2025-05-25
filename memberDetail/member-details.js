@@ -141,7 +141,7 @@ function setupDownloadButton() {
 
     // Increase font size for text inside profile card
     const originalFontSize = profileCard.style.fontSize;
-    profileCard.style.fontSize = "18px"; // Adjust this value as needed
+    profileCard.style.fontSize = "18px";
 
     // Determine background color based on training type
     const trainingTypeEl = document.querySelector(".training-type");
@@ -149,12 +149,15 @@ function setupDownloadButton() {
 
     if (trainingTypeEl) {
       const type = trainingTypeEl.textContent.toLowerCase();
-      if (type.includes("aerobics") && type.includes("machine")) {
-        bgColor = "#d9c9ff"; // Light purple for both
-      } else if (type.includes("aerobics")) {
-        bgColor = "#ccffcc"; // Light green
-      } else if (type.includes("machine")) {
-        bgColor = "#cce5ff"; // Light blue
+      const hasAerobics = type.includes("aerobics");
+      const hasMachine = type.includes("machine");
+
+      if (hasAerobics && hasMachine) {
+        bgColor = "#ffffff"; // White for both
+      } else if (hasAerobics) {
+        bgColor = "#cce5ff"; // Light blue for aerobics
+      } else if (hasMachine) {
+        bgColor = "#ccffcc"; // Light green for machine
       }
     }
 
@@ -167,39 +170,53 @@ function setupDownloadButton() {
       allowTaint: true,
       useCORS: true,
       backgroundColor: null,
-      scrollX: 0, // No horizontal scrolling offset
-      scrollY: 0, // No vertical scrolling offset
-      x: 0, // Capture from the leftmost point
-      y: 0, // Capture from the topmost point
-      width: profileCard.offsetWidth, // Capture the full width
-      height: profileCard.offsetHeight, // Capture the full height
+      scrollX: 0,
+      scrollY: 0,
+      x: 0,
+      y: 0,
+      width: profileCard.offsetWidth,
+      height: profileCard.offsetHeight,
     }).then((canvas) => {
+      // Target ID card size: 600 x 378 pixels (approx wallet-size)
+      const cardWidth = 600;
+      const cardHeight = 378;
+
       const resizedCanvas = document.createElement("canvas");
-      resizedCanvas.width = 600;
-      resizedCanvas.height = 300;
+      resizedCanvas.width = cardWidth;
+      resizedCanvas.height = cardHeight;
       const ctx = resizedCanvas.getContext("2d");
 
       // Set background color and fill
       ctx.fillStyle = bgColor;
-      ctx.fillRect(0, 0, resizedCanvas.width, resizedCanvas.height);
+      ctx.fillRect(0, 0, cardWidth, cardHeight);
 
-      // Draw original canvas over the background color
-      ctx.drawImage(canvas, 0, 0, 600, 400);
+      // Draw original canvas onto resized canvas (centered)
+      const scale = Math.min(
+        cardWidth / canvas.width,
+        cardHeight / canvas.height
+      );
+      const scaledWidth = canvas.width * scale;
+      const scaledHeight = canvas.height * scale;
+      const xOffset = (cardWidth - scaledWidth) / 2;
+      const yOffset = (cardHeight - scaledHeight) / 2;
+
+      ctx.drawImage(canvas, xOffset, yOffset, scaledWidth, scaledHeight);
 
       // Convert canvas to image
       const imgData = resizedCanvas.toDataURL("image/png");
-
       const link = document.createElement("a");
       link.href = imgData;
+
+      // Use fallback if memberId isn't declared
+      const memberId = window.memberId || "member";
+
       link.download = `id-card-${memberId}.png`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
 
-      // Restore original font size and visibility
+      // Restore font size and visibility
       profileCard.style.fontSize = originalFontSize;
-
-      // Restore visibility and background of profile card
       [paymentStatus, paymentDate, downloadBtn, editBtn].forEach((el) => {
         if (el) el.style.visibility = "visible";
       });
