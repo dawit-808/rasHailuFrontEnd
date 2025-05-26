@@ -120,7 +120,7 @@ function generateQRCode(url) {
   if (!qrCodeContainer) return;
 
   qrCodeContainer.innerHTML = ""; // Clear previous QR code
-  new QRCode(qrCodeContainer, { text: url, width: 150, height: 150 });
+  new QRCode(qrCodeContainer, { text: url, width: 500, height: 500 });
 }
 
 // Function to set up the download button
@@ -135,48 +135,42 @@ function setupDownloadButton() {
       downloadBtn,
       document.getElementById("editMemberBtn"),
       document.querySelector(".training-date"),
-    ].filter((el) => el); // Filter out null elements
+    ].filter((el) => el);
 
-    // Store original styles
     const profileCard = document.querySelector(".profile-card");
+
+    // Store original visibility
     const originalStyles = elementsToHide.map((el) => ({
       element: el,
       visibility: el.style.visibility,
     }));
-    const originalCardStyle = {
-      background: profileCard.style.background,
-      fontSize: profileCard.style.fontSize,
-    };
 
-    // Hide UI elements
     elementsToHide.forEach((el) => (el.style.visibility = "hidden"));
     profileCard.classList.add("download-mode");
 
     // Determine background color
     const trainingTypeEl = document.querySelector(".training-type");
-    let bgColor = "#ffffff"; // Default white
+    let bgColor = "#ffffff";
     if (trainingTypeEl) {
       const type = trainingTypeEl.textContent.toLowerCase();
       if (type.includes("aerobics") && type.includes("machine")) {
         bgColor = "#ffffff";
       } else if (type.includes("aerobics")) {
-        bgColor = "#cce5ff";
+        bgColor = "#0000FF";
       } else if (type.includes("machine")) {
-        bgColor = "#ccffcc";
+        bgColor = "#008000";
       }
     }
 
     try {
-      // Use higher scale (4x for ultra HD)
       const canvas = await html2canvas(profileCard, {
-        scale: 4, // Increased from 2 to 4
+        scale: 8,
         logging: false,
         useCORS: true,
         allowTaint: true,
         backgroundColor: null,
         letterRendering: true,
         ignoreElements: (element) => {
-          // Ignore any absolutely positioned elements that might overlap
           return (
             window.getComputedStyle(element).position === "absolute" &&
             element !== profileCard
@@ -184,7 +178,6 @@ function setupDownloadButton() {
         },
       });
 
-      // Create output canvas with desired dimensions (600x378)
       const outputWidth = 600;
       const outputHeight = 378;
       const outputCanvas = document.createElement("canvas");
@@ -192,11 +185,9 @@ function setupDownloadButton() {
       outputCanvas.height = outputHeight;
       const ctx = outputCanvas.getContext("2d");
 
-      // Fill with background color first
       ctx.fillStyle = bgColor;
       ctx.fillRect(0, 0, outputWidth, outputHeight);
 
-      // Calculate scaling to fit while maintaining aspect ratio
       const scale = Math.min(
         outputWidth / canvas.width,
         outputHeight / canvas.height
@@ -206,11 +197,9 @@ function setupDownloadButton() {
       const xOffset = (outputWidth - scaledWidth) / 2;
       const yOffset = (outputHeight - scaledHeight) / 2;
 
-      // Use high-quality image scaling
       ctx.imageSmoothingQuality = "high";
       ctx.drawImage(canvas, xOffset, yOffset, scaledWidth, scaledHeight);
 
-      // Convert to PNG with highest quality
       const imgData = outputCanvas.toDataURL("image/png", 1.0);
       const link = document.createElement("a");
       link.href = imgData;
@@ -224,13 +213,10 @@ function setupDownloadButton() {
     } catch (error) {
       console.error("Error generating image:", error);
     } finally {
-      // Restore original styles
       originalStyles.forEach((style) => {
         style.element.style.visibility = style.visibility;
       });
       profileCard.classList.remove("download-mode");
-      profileCard.style.background = originalCardStyle.background;
-      profileCard.style.fontSize = originalCardStyle.fontSize;
     }
   });
 }

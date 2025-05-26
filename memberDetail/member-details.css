@@ -17,12 +17,6 @@ body {
   background: linear-gradient(135deg, #d4eaff, #b5d4ff);
   color: #333;
   min-height: 100vh;
-  padding: 20px;
-  transition: background 0.5s ease;
-}
-
-body:hover {
-  background: linear-gradient(135deg, #b5d4ff, #d4eaff);
 }
 
 /* Navbar */
@@ -50,15 +44,6 @@ body:hover {
   transform: translateY(-2px);
 }
 
-/* Profile Card */
-.profile-card {
-  background: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(10px);
-  border-radius: 15px;
-  padding: 5px;
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-}
 .profile-card * {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -67,8 +52,9 @@ body:hover {
 
 .download-mode {
   font-size: 28px;
-  font-weight: 600;
-  text-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
+  padding: 0;
+  margin: 0;
+  line-height: 1.4;
 }
 
 /* Head Section */
@@ -84,12 +70,10 @@ body:hover {
 
 /* Profile Image */
 .profile-img {
-  width: 180px;
-  height: 200px;
+  width: 250px;
+  height: 250px;
   object-fit: cover;
   border-radius: 10px;
-  border: 4px solid #007bff;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
 }
 
 /* Member Name */
@@ -102,7 +86,7 @@ body:hover {
 
 /* Profile Details */
 .profile-details p {
-  font-weight: 400;
+  font-weight: 600;
   border-radius: 8px;
   padding: 10px;
 }
@@ -147,13 +131,8 @@ body:hover {
   background: rgba(255, 255, 255, 0.3);
   border-radius: 10px;
   padding: 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease;
 }
 
-#qrcode:hover {
-  transform: scale(1.05);
-}
 .btns {
   display: flex;
   align-items: center;
