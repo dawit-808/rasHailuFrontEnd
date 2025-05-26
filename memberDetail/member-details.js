@@ -151,8 +151,10 @@ function setupDownloadButton() {
     // Determine background color
     const trainingTypeEl = document.querySelector(".training-type");
     let bgColor = "#ffffff";
+    let type = "";
+
     if (trainingTypeEl) {
-      const type = trainingTypeEl.textContent.toLowerCase();
+      type = trainingTypeEl.textContent.toLowerCase();
       if (type.includes("aerobics") && type.includes("machine")) {
         bgColor = "#ffffff";
       } else if (type.includes("aerobics")) {

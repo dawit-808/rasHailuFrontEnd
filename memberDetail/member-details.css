@@ -56,16 +56,18 @@ body {
   margin: 0;
   line-height: 1.4;
 }
+.profile-card.text-white {
+  color: #ffffff !important;
+}
 
 /* Head Section */
 .head {
   margin-bottom: 20px;
 }
 
-.head h2 {
+.head h1 {
   font-size: 24px;
   font-weight: 700;
-  color: #333;
 }
 
 /* Profile Image */
@@ -81,7 +83,6 @@ body {
   font-size: 28px;
   font-weight: 700;
   margin-top: 10px;
-  color: #333;
 }
 
 /* Profile Details */
