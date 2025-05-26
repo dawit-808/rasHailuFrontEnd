@@ -162,6 +162,10 @@ function setupDownloadButton() {
       }
     }
 
+    if (type.includes("aerobics") || type.includes("machine")) {
+      profileCard.classList.add("text-white");
+    }
+
     try {
       const canvas = await html2canvas(profileCard, {
         scale: 8,
@@ -216,7 +220,7 @@ function setupDownloadButton() {
       originalStyles.forEach((style) => {
         style.element.style.visibility = style.visibility;
       });
-      profileCard.classList.remove("download-mode");
+      profileCard.classList.remove("download-mode", "text-white");
     }
   });
 }
