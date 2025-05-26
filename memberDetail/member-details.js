@@ -128,98 +128,110 @@ function setupDownloadButton() {
   const downloadBtn = document.getElementById("downloadBtn");
   if (!downloadBtn) return;
 
-  downloadBtn.addEventListener("click", () => {
-    const paymentStatus = document.querySelector(".pay");
-    const paymentDate = document.querySelector(".pay-date");
-    const editBtn = document.getElementById("editMemberBtn");
+  downloadBtn.addEventListener("click", async () => {
+    const elementsToHide = [
+      document.querySelector(".pay"),
+      document.querySelector(".pay-date"),
+      downloadBtn,
+      document.getElementById("editMemberBtn"),
+      document.querySelector(".training-date"),
+    ].filter((el) => el); // Filter out null elements
+
+    // Store original styles
     const profileCard = document.querySelector(".profile-card");
-    const trainingTime = document.querySelector(".training-date");
+    const originalStyles = elementsToHide.map((el) => ({
+      element: el,
+      visibility: el.style.visibility,
+    }));
+    const originalCardStyle = {
+      background: profileCard.style.background,
+      fontSize: profileCard.style.fontSize,
+    };
 
-    // Hide UI elements temporarily
-    [paymentStatus, paymentDate, downloadBtn, editBtn, trainingTime].forEach(
-      (el) => {
-        if (el) el.style.visibility = "hidden";
-      }
-    );
-
-    // Increase font size for text inside profile card
-    const originalFontSize = profileCard.style.fontSize;
+    // Hide UI elements
+    elementsToHide.forEach((el) => (el.style.visibility = "hidden"));
     profileCard.classList.add("download-mode");
 
-    // Determine background color based on training type
+    // Determine background color
     const trainingTypeEl = document.querySelector(".training-type");
     let bgColor = "#ffffff"; // Default white
-
     if (trainingTypeEl) {
       const type = trainingTypeEl.textContent.toLowerCase();
-      const hasAerobics = type.includes("aerobics");
-      const hasMachine = type.includes("machine");
-
-      if (hasAerobics && hasMachine) {
-        bgColor = "#ffffff"; // White for both
-      } else if (hasAerobics) {
-        bgColor = "#cce5ff"; // Light blue for aerobics
-      } else if (hasMachine) {
-        bgColor = "#ccffcc"; // Light green for machine
+      if (type.includes("aerobics") && type.includes("machine")) {
+        bgColor = "#ffffff";
+      } else if (type.includes("aerobics")) {
+        bgColor = "#cce5ff";
+      } else if (type.includes("machine")) {
+        bgColor = "#ccffcc";
       }
     }
 
-    // Temporarily remove background from card
-    const originalBg = profileCard.style.background;
-    profileCard.style.background = "transparent";
+    try {
+      // Use higher scale (4x for ultra HD)
+      const canvas = await html2canvas(profileCard, {
+        scale: 4, // Increased from 2 to 4
+        logging: false,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: null,
+        letterRendering: true,
+        ignoreElements: (element) => {
+          // Ignore any absolutely positioned elements that might overlap
+          return (
+            window.getComputedStyle(element).position === "absolute" &&
+            element !== profileCard
+          );
+        },
+      });
 
-    // Use html2canvas to render the profileCard
-    html2canvas(profileCard, {
-      scale: 4,
-      allowTaint: true,
-      useCORS: true,
-      backgroundColor: null,
-      scrollX: 0,
-      scrollY: 0,
-    }).then((canvas) => {
-      const cardWidth = 600;
-      const cardHeight = 378;
+      // Create output canvas with desired dimensions (600x378)
+      const outputWidth = 600;
+      const outputHeight = 378;
+      const outputCanvas = document.createElement("canvas");
+      outputCanvas.width = outputWidth;
+      outputCanvas.height = outputHeight;
+      const ctx = outputCanvas.getContext("2d");
 
-      const resizedCanvas = document.createElement("canvas");
-      resizedCanvas.width = cardWidth;
-      resizedCanvas.height = cardHeight;
-      const ctx = resizedCanvas.getContext("2d");
-
-      // Background
+      // Fill with background color first
       ctx.fillStyle = bgColor;
-      ctx.fillRect(0, 0, cardWidth, cardHeight);
+      ctx.fillRect(0, 0, outputWidth, outputHeight);
 
-      // Scale & center the high-res canvas
+      // Calculate scaling to fit while maintaining aspect ratio
       const scale = Math.min(
-        cardWidth / canvas.width,
-        cardHeight / canvas.height
+        outputWidth / canvas.width,
+        outputHeight / canvas.height
       );
       const scaledWidth = canvas.width * scale;
       const scaledHeight = canvas.height * scale;
-      const xOffset = (cardWidth - scaledWidth) / 2;
-      const yOffset = (cardHeight - scaledHeight) / 2;
+      const xOffset = (outputWidth - scaledWidth) / 2;
+      const yOffset = (outputHeight - scaledHeight) / 2;
 
+      // Use high-quality image scaling
+      ctx.imageSmoothingQuality = "high";
       ctx.drawImage(canvas, xOffset, yOffset, scaledWidth, scaledHeight);
 
-      const imgData = resizedCanvas.toDataURL("image/png");
+      // Convert to PNG with highest quality
+      const imgData = outputCanvas.toDataURL("image/png", 1.0);
       const link = document.createElement("a");
       link.href = imgData;
       const memberId = window.memberId || "member";
-      link.download = `id-card-${memberId}.png`;
+      link.download = `id-card-${memberId}-${new Date()
+        .toISOString()
+        .slice(0, 10)}.png`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-
-      // Restore UI
-      profileCard.style.fontSize = originalFontSize;
-      [paymentStatus, paymentDate, downloadBtn, editBtn, trainingTime].forEach(
-        (el) => {
-          if (el) el.style.visibility = "visible";
-        }
-      );
+    } catch (error) {
+      console.error("Error generating image:", error);
+    } finally {
+      // Restore original styles
+      originalStyles.forEach((style) => {
+        style.element.style.visibility = style.visibility;
+      });
       profileCard.classList.remove("download-mode");
-      profileCard.style.background = originalBg;
-    });
+      profileCard.style.background = originalCardStyle.background;
+      profileCard.style.fontSize = originalCardStyle.fontSize;
+    }
   });
 }
 

@@ -59,10 +59,16 @@ body:hover {
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
   border: 1px solid rgba(255, 255, 255, 0.3);
 }
+.profile-card * {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
 
 .download-mode {
   font-size: 28px;
   font-weight: 600;
+  text-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
 }
 
 /* Head Section */
