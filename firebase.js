@@ -16,19 +16,18 @@ import {
   onValue,
   update,
   push,
-  remove
+  remove,
 } from "https://www.gstatic.com/firebasejs/9.19.1/firebase-database.js";
 
 // Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyCxF_uCmFgNlVaCXYa80zCDBlJiB9PSFyw",
-  authDomain: "rashailu-gym.firebaseapp.com",
-  databaseURL: "https://rashailu-gym-default-rtdb.firebaseio.com",
-  projectId: "rashailu-gym",
-  storageBucket: "rashailu-gym.firebasestorage.app",
-  messagingSenderId: "965173384064",
-  appId: "1:965173384064:web:a8ae46979c06f9f0e8e765",
-  measurementId: "G-R938ZL5YMS",
+  apiKey: "AIzaSyCGIicDXgC4-GhhlaFrFKtN-31HyQbAvk4",
+  authDomain: "raspapa-3aab0.firebaseapp.com",
+  databaseURL: "https://raspapa-3aab0-default-rtdb.firebaseio.com",
+  projectId: "raspapa-3aab0",
+  storageBucket: "raspapa-3aab0.firebasestorage.app",
+  messagingSenderId: "739010939510",
+  appId: "1:739010939510:web:86b97f7f92562c5cf36d57",
 };
 
 // Initialize Firebase

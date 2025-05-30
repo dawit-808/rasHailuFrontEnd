@@ -1,7 +1,4 @@
 import { db, ref, set, get, onValue, update, remove } from "../../firebase.js";
-import { elements } from "./dom.js";
-import { renderMembersList } from "./ui.js";
-import { updateStatistics } from "./statistics.js";
 
 // Get members and include Firebase key
 export async function getMembers() {
