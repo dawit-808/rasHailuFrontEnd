@@ -206,13 +206,13 @@ function setupDownloadButton() {
       ctx.imageSmoothingQuality = "high";
       ctx.drawImage(canvas, xOffset, yOffset, scaledWidth, scaledHeight);
 
-      const imgData = outputCanvas.toDataURL("image/png", 1.0);
+      const imgData = outputCanvas.toDataURL("image/jpeg", 1.0);
       const link = document.createElement("a");
       link.href = imgData;
       const memberId = window.memberId || "member";
       link.download = `id-card-${memberId}-${new Date()
         .toISOString()
-        .slice(0, 10)}.png`;
+        .slice(0, 10)}.jpg`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
