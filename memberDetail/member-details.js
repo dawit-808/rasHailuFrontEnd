@@ -185,8 +185,8 @@ function setupDownloadButton() {
       });
 
       // Updated dimensions for high-quality printing
-      const outputWidth = 1012; // 3.375 inches * 300 DPI
-      const outputHeight = 638; // 2.125 inches * 300 DPI
+      const outputWidth = 600; // 3.375 inches * 300 DPI
+      const outputHeight = 378; // 2.125 inches * 300 DPI
 
       const outputCanvas = document.createElement("canvas");
       outputCanvas.width = outputWidth;
