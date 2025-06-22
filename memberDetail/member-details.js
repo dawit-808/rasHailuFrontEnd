@@ -183,9 +183,10 @@ function setupDownloadButton() {
           );
         },
       });
-      // CR80 Credit Card Size: 8.56cm × 5.4cm @ 300 DPI
-      const outputWidth = 1011;
-      const outputHeight = 638;
+
+      // Updated dimensions for high-quality printing
+      const outputWidth = 1012; // 3.375 inches * 300 DPI
+      const outputHeight = 638; // 2.125 inches * 300 DPI
 
       const outputCanvas = document.createElement("canvas");
       outputCanvas.width = outputWidth;
@@ -210,10 +211,15 @@ function setupDownloadButton() {
       const imgData = outputCanvas.toDataURL("image/jpeg", 1.0);
       const link = document.createElement("a");
       link.href = imgData;
-      const memberId = window.memberId || "member";
+
+      // ✅ Automatically get member ID from the page
+      const memberIdEl = document.querySelector(".member-id");
+      const memberId = memberIdEl ? memberIdEl.textContent.trim() : "member";
+
       link.download = `id-card-${memberId}-${new Date()
         .toISOString()
         .slice(0, 10)}.jpg`;
+
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
