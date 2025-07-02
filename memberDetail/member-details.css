@@ -50,16 +50,6 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-.download-mode {
-  font-size: 28px;
-  padding: 0;
-  margin: 0;
-  line-height: 1.4;
-}
-.profile-card.text-white {
-  color: #ffffff !important;
-}
-
 /* Head Section */
 .head {
   margin-bottom: 20px;
@@ -129,15 +119,15 @@ body {
   padding: 10px;
 }
 
+/* Buttons */
 .btns {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 16px; /* spacing between buttons */
+  gap: 16px;
   margin-top: 20px;
 }
 
-/* Base Button Styling */
 .btn {
   padding: 10px 20px;
   font-size: 16px;
@@ -150,7 +140,6 @@ body {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Download Button */
 .btn-primary {
   background-color: #007bff;
   color: #fff;
@@ -160,7 +149,6 @@ body {
   background-color: #0056b3;
 }
 
-/* Edit Button */
 .btn-warning {
   background-color: #ffc107;
   color: #212529;
@@ -170,7 +158,6 @@ body {
   background-color: #e0a800;
 }
 
-/* Optional: Remove margin-bottom from button wrappers */
 .btns > div {
   margin-bottom: 0;
 }
@@ -216,4 +203,47 @@ body {
   .member-name {
     font-size: 22px;
   }
+}
+
+/* DOWNLOAD MODE STYLES */
+.profile-card.download-mode {
+  font-size: 20px !important;
+  line-height: 1.5 !important;
+  transform: scale(1.1);
+  transform-origin: top left;
+}
+
+.profile-card.download-mode.text-white {
+  color: #ffffff !important;
+}
+
+/* Member full name */
+.profile-card.download-mode .member-name {
+  font-size: 38px !important;
+  font-weight: 900 !important;
+}
+
+/* Member ID */
+.profile-card.download-mode .member-id {
+  font-size: 22px !important;
+  font-weight: 700 !important;
+}
+
+/* Profile details wrapper */
+.profile-card.download-mode .profile-details {
+  padding: 10px 0;
+  font-size: 22px !important;
+}
+
+/* Each detail line */
+.profile-card.download-mode .profile-details p {
+  font-size: 22px !important;
+  font-weight: 600 !important;
+  margin-bottom: 8px;
+}
+
+/* Enlarge actual value (inside <span class="value">) */
+.profile-card.download-mode .profile-details p .value {
+  font-size: 24px !important;
+  font-weight: 700 !important;
 }
