@@ -207,6 +207,7 @@ body {
 
 /* DOWNLOAD MODE STYLES */
 .profile-card.download-mode {
+  width: 100% !important;
   font-size: 20px !important;
   line-height: 1.5 !important;
   transform: scale(1.1);
@@ -225,25 +226,40 @@ body {
 
 /* Member ID */
 .profile-card.download-mode .member-id {
-  font-size: 22px !important;
+  font-size: 25px !important;
   font-weight: 700 !important;
 }
 
 /* Profile details wrapper */
 .profile-card.download-mode .profile-details {
   padding: 10px 0;
-  font-size: 22px !important;
+  font-size: 26px !important;
 }
 
 /* Each detail line */
 .profile-card.download-mode .profile-details p {
-  font-size: 22px !important;
+  font-size: 28px !important;
   font-weight: 600 !important;
   margin-bottom: 8px;
 }
 
 /* Enlarge actual value (inside <span class="value">) */
 .profile-card.download-mode .profile-details p .value {
-  font-size: 24px !important;
+  font-size: 30px !important;
   font-weight: 700 !important;
+}
+/* Force white background and dark text for head during download */
+.profile-card.download-mode .head {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+.profile-card.download-mode .head .col,
+.profile-card.download-mode .head .col-2,
+.profile-card.download-mode .head {
+  padding: 0 !important;
+  margin: 0 !important;
 }
