@@ -66,8 +66,14 @@ export function validateMemberData(data) {
 }
 
 export async function membersCollector() {
+  const loadingIndicator = document.getElementById("loadingIndicator");
+  loadingIndicator.style.display = "block"; // Show loader
+
   const memberData = getFormData();
-  if (!validateMemberData(memberData)) return;
+  if (!validateMemberData(memberData)) {
+    loadingIndicator.style.display = "none"; // Hide if validation fails
+    return;
+  }
 
   try {
     await registerMember(memberData);
@@ -76,6 +82,8 @@ export async function membersCollector() {
   } catch (error) {
     console.error("Registration error:", error);
     alert("Failed to register member. Please try again.");
+  } finally {
+    loadingIndicator.style.display = "none"; // Always hide loader
   }
 }
 
