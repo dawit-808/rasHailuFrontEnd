@@ -1,4 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.19.1/firebase-app.js";
+
 import {
   getAuth,
   signInWithEmailAndPassword,
@@ -6,24 +7,24 @@ import {
   sendPasswordResetEmail,
   onAuthStateChanged,
   signOut,
-} from "https://www.gstatic.com/firebasejs/9.19.1/firebase-auth.js"; // Import auth methods
+} from "https://www.gstatic.com/firebasejs/9.19.1/firebase-auth.js";
 
 import {
-  getDatabase,
-  ref,
-  set,
-  get,
-  onValue,
-  update,
-  push,
-  remove,
-} from "https://www.gstatic.com/firebasejs/9.19.1/firebase-database.js";
+  getFirestore,
+  collection,
+  doc,
+  setDoc,
+  getDoc,
+  getDocs,
+  updateDoc,
+  deleteDoc,
+  onSnapshot,
+} from "https://www.gstatic.com/firebasejs/9.19.1/firebase-firestore.js";
 
 // Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyCGIicDXgC4-GhhlaFrFKtN-31HyQbAvk4",
   authDomain: "raspapa-3aab0.firebaseapp.com",
-  databaseURL: "https://raspapa-3aab0-default-rtdb.firebaseio.com",
   projectId: "raspapa-3aab0",
   storageBucket: "raspapa-3aab0.firebasestorage.app",
   messagingSenderId: "739010939510",
@@ -33,21 +34,22 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-// Initialize Firebase Authentication and Database
+// Initialize Firebase Auth and Firestore
 const auth = getAuth(app);
-const db = getDatabase(app);
+const db = getFirestore(app);
 
-// Export the necessary functions for use in other files
+// Export Auth and Firestore methods
 export {
   auth,
   db,
-  ref,
-  set,
-  get,
-  onValue,
-  update,
-  push,
-  remove,
+  collection,
+  doc,
+  setDoc,
+  getDoc,
+  getDocs,
+  updateDoc,
+  deleteDoc,
+  onSnapshot,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   sendPasswordResetEmail,

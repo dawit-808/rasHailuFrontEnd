@@ -1,4 +1,12 @@
-import { db, ref, get, update } from "../firebase.js";
+import {
+  db,
+  getDoc,
+  setDoc,
+  updateDoc,
+  doc,
+  collection,
+  getDocs,
+} from "../firebase.js";
 
 // Extract member ID from URL
 const urlParams = new URLSearchParams(window.location.search);
@@ -15,18 +23,18 @@ if (memberId) {
     "coachesLink"
   ).href = `../coaches/coaches.html?id=${memberId}`;
 
-  const memberRef = ref(db, `members/${memberId}`);
-  const healthRef = ref(db, `members/${memberId}/healthData`);
+  const memberRef = doc(db, "members", memberId);
   const gymForm = document.getElementById("gymForm");
   let tableContainer = document.getElementById("healthDataTable");
-
-  let healthData = {}; // Store health data globally
+  let healthData = {};
 
   // Fetch member data
-  get(memberRef)
-    .then((snapshot) => {
-      if (snapshot.exists()) {
-        const member = snapshot.val();
+  getDoc(memberRef)
+    .then((docSnap) => {
+      if (docSnap.exists()) {
+        const member = docSnap.data();
+        healthData = member.healthData || {};
+
         document.querySelector(
           ".member-name"
         ).textContent = `${member.name} ${member.fname}`;
@@ -37,29 +45,15 @@ if (memberId) {
     })
     .catch((error) => console.error("Error fetching member data:", error));
 
-  // Fetch health data
-  get(healthRef)
+  // Fetch coaches from Firestore
+  getDocs(collection(db, "coaches"))
     .then((snapshot) => {
-      if (snapshot.exists()) {
-        healthData = snapshot.val();
-        console.log("Fetched health data:", healthData);
-      } else {
-        console.warn("Health data not found.");
-      }
-    })
-    .catch((error) => console.error("Error fetching health data:", error));
+      const coachContainer = document.querySelector(".checkbox-group");
+      coachContainer.innerHTML = "";
 
-  // Fetch coaches from Firebase
-  const coachesRef = ref(db, "coaches");
-  get(coachesRef)
-    .then((snapshot) => {
-      if (snapshot.exists()) {
-        const coachesData = snapshot.val();
-        const coachContainer = document.querySelector(".checkbox-group");
-        coachContainer.innerHTML = ""; // Clear previous coaches
-
-        Object.keys(coachesData).forEach((coachId) => {
-          const coach = coachesData[coachId];
+      if (!snapshot.empty) {
+        snapshot.forEach((doc) => {
+          const coach = doc.data();
           const isChecked =
             healthData.coach && healthData.coach.includes(coach.fullName);
 
@@ -74,15 +68,12 @@ if (memberId) {
           coachContainer.appendChild(coachDiv);
         });
 
-        // Now populate the form (ensuring checkboxes exist first)
         populateForm(healthData);
         displayTable(healthData);
         gymForm.style.display =
           healthData && Object.keys(healthData).length > 0 ? "none" : "block";
       } else {
-        console.warn("No coaches found.");
-        document.querySelector(".checkbox-group").innerHTML =
-          "<p>No coaches available.</p>";
+        coachContainer.innerHTML = "<p>No coaches available.</p>";
       }
     })
     .catch((error) => console.error("Error fetching coaches:", error));
@@ -99,10 +90,8 @@ if (memberId) {
       document.querySelectorAll('[name="coach"]:checked')
     ).map((checkbox) => checkbox.value);
 
-    console.log("Health Data to Save: ", healthData);
-
     try {
-      await update(healthRef, healthData); // Use update to preserve existing data
+      await updateDoc(memberRef, { healthData });
       alert("Health data saved/updated successfully!");
 
       // Hide form and display table
@@ -114,7 +103,7 @@ if (memberId) {
     }
   });
 
-  // Function to populate form with saved data
+  // Populate form with saved data
   function populateForm(data) {
     for (const key in data) {
       const inputElements = document.querySelectorAll(`[name="${key}"]`);
@@ -139,7 +128,7 @@ if (memberId) {
     }
   }
 
-  // Function to display table with submitted data
+  // Display table with submitted data
   function displayTable(data) {
     if (!tableContainer) {
       tableContainer = document.createElement("div");
@@ -171,9 +160,8 @@ if (memberId) {
     `;
 
     tableContainer.innerHTML = tableHTML;
-    tableContainer.style.display = "block"; // Show table after form submission
+    tableContainer.style.display = "block";
 
-    // Add event listener to "Edit" button
     document.getElementById("editDataBtn").addEventListener("click", () => {
       tableContainer.style.display = "none";
       gymForm.style.display = "block";

@@ -1,4 +1,4 @@
-import { db, ref, onValue, get, update } from "../firebase.js";
+import { db, doc, getDoc, onSnapshot, updateDoc } from "../firebase.js";
 
 // Extract member ID from URL
 const urlParams = new URLSearchParams(window.location.search);
@@ -11,14 +11,13 @@ if (memberId) {
     healthStatusLink.href = `../healthStatus/health-status.html?id=${memberId}`;
   }
 
-  const memberRef = ref(db, `members/${memberId}`);
+  const memberRef = doc(db, "members", memberId);
 
   // Listen for real-time updates
-  onValue(memberRef, (snapshot) => {
+  onSnapshot(memberRef, (snapshot) => {
     if (snapshot.exists()) {
-      const member = snapshot.val();
+      const member = snapshot.data();
 
-      // Update the profile card safely
       updateElement(".profile-img", (el) => {
         el.src = member.imageUrl || "default-image.jpg";
       });
@@ -36,7 +35,6 @@ if (memberId) {
         updatePaymentStatusClass(el);
       });
 
-      // Convert timestamp to readable date
       const paymentDate = member.paymentTimestamp
         ? new Date(member.paymentTimestamp).toLocaleDateString()
         : "Not Paid";
@@ -44,7 +42,6 @@ if (memberId) {
         el.textContent = paymentDate;
       });
 
-      // Update Training Info
       updateElement(".training-type", (el) => {
         el.textContent = member.trainingType || "Not Assigned";
       });
@@ -65,22 +62,17 @@ if (memberId) {
         el.textContent = member.healthData?.emergencyPhone || "N/A";
       });
 
-      // Update Coaches link
       const coachesLink = document.getElementById("coachesLink");
       if (coachesLink) {
         coachesLink.href = `../coaches/coaches.html?id=${memberId}`;
       }
 
-      // Generate QR Code with the member's profile URL
       generateQRCode(
         window.location.origin +
           `/memberDetail/member-details.html?id=${memberId}`
       );
 
-      // Add download functionality
       setupDownloadButton();
-
-      // Setup edit button
       setupEditButton(member);
     } else {
       alert("Member not found.");
@@ -90,40 +82,27 @@ if (memberId) {
   alert("Invalid Member ID");
 }
 
-// Function to update elements safely
 function updateElement(selector, callback) {
   const element = document.querySelector(selector);
-  if (element) {
-    callback(element);
-  }
+  if (element) callback(element);
 }
 
-// Function to update payment status class
-function updatePaymentStatusClass(paymentStatusElement) {
-  if (!paymentStatusElement) return;
-
-  const statusText = paymentStatusElement.textContent.trim();
-  paymentStatusElement.classList.remove("paid", "warning", "unpaid");
-
-  if (statusText === "Paid") {
-    paymentStatusElement.classList.add("paid");
-  } else if (statusText === "Warning") {
-    paymentStatusElement.classList.add("warning");
-  } else {
-    paymentStatusElement.classList.add("unpaid");
-  }
+function updatePaymentStatusClass(el) {
+  if (!el) return;
+  const status = el.textContent.trim();
+  el.classList.remove("paid", "warning", "unpaid");
+  el.classList.add(
+    status === "Paid" ? "paid" : status === "Warning" ? "warning" : "unpaid"
+  );
 }
 
-// Function to generate QR Code
 function generateQRCode(url) {
   const qrCodeContainer = document.getElementById("qrcode");
   if (!qrCodeContainer) return;
-
-  qrCodeContainer.innerHTML = ""; // Clear previous QR code
+  qrCodeContainer.innerHTML = "";
   new QRCode(qrCodeContainer, { text: url, width: 500, height: 500 });
 }
 
-// Function to set up the download button
 function setupDownloadButton() {
   const downloadBtn = document.getElementById("downloadBtn");
   if (!downloadBtn) return;
@@ -135,11 +114,10 @@ function setupDownloadButton() {
       downloadBtn,
       document.getElementById("editMemberBtn"),
       document.querySelector(".training-date"),
-    ].filter((el) => el);
+    ].filter(Boolean);
 
     const profileCard = document.querySelector(".profile-card");
 
-    // Store original visibility
     const originalStyles = elementsToHide.map((el) => ({
       element: el,
       visibility: el.style.visibility,
@@ -148,20 +126,16 @@ function setupDownloadButton() {
     elementsToHide.forEach((el) => (el.style.visibility = "hidden"));
     profileCard.classList.add("download-mode");
 
-    // Determine background color
     const trainingTypeEl = document.querySelector(".training-type");
     let bgColor = "#ffffff";
-    let type = "";
+    let type = trainingTypeEl?.textContent.toLowerCase() || "";
 
-    if (trainingTypeEl) {
-      type = trainingTypeEl.textContent.toLowerCase();
-      if (type.includes("aerobics") && type.includes("machine")) {
-        bgColor = "#ffffff";
-      } else if (type.includes("aerobics")) {
-        bgColor = "#0000FF";
-      } else if (type.includes("machine")) {
-        bgColor = "#008000";
-      }
+    if (type.includes("aerobics") && type.includes("machine")) {
+      bgColor = "#ffffff";
+    } else if (type.includes("aerobics")) {
+      bgColor = "#0000FF";
+    } else if (type.includes("machine")) {
+      bgColor = "#008000";
     }
 
     if (type.includes("aerobics") || type.includes("machine")) {
@@ -171,39 +145,31 @@ function setupDownloadButton() {
     try {
       const canvas = await html2canvas(profileCard, {
         scale: 8,
-        logging: false,
         useCORS: true,
         allowTaint: true,
         backgroundColor: null,
         letterRendering: true,
-        ignoreElements: (element) => {
-          return (
-            window.getComputedStyle(element).position === "absolute" &&
-            element !== profileCard
-          );
-        },
+        ignoreElements: (el) =>
+          window.getComputedStyle(el).position === "absolute" &&
+          el !== profileCard,
       });
 
-      // Updated dimensions for high-quality printing
-      const outputWidth = 1012; // 3.375 inches * 300 DPI
-      const outputHeight = 638; // 2.125 inches * 300 DPI
-
       const outputCanvas = document.createElement("canvas");
-      outputCanvas.width = outputWidth;
-      outputCanvas.height = outputHeight;
+      outputCanvas.width = 1012;
+      outputCanvas.height = 638;
       const ctx = outputCanvas.getContext("2d");
 
       ctx.fillStyle = bgColor;
-      ctx.fillRect(0, 0, outputWidth, outputHeight);
+      ctx.fillRect(0, 0, outputCanvas.width, outputCanvas.height);
 
       const scale = Math.min(
-        outputWidth / canvas.width,
-        outputHeight / canvas.height
+        outputCanvas.width / canvas.width,
+        outputCanvas.height / canvas.height
       );
       const scaledWidth = canvas.width * scale;
       const scaledHeight = canvas.height * scale;
-      const xOffset = (outputWidth - scaledWidth) / 2;
-      const yOffset = (outputHeight - scaledHeight) / 2;
+      const xOffset = (outputCanvas.width - scaledWidth) / 2;
+      const yOffset = (outputCanvas.height - scaledHeight) / 2;
 
       ctx.imageSmoothingQuality = "high";
       ctx.drawImage(canvas, xOffset, yOffset, scaledWidth, scaledHeight);
@@ -212,9 +178,8 @@ function setupDownloadButton() {
       const link = document.createElement("a");
       link.href = imgData;
 
-      // ✅ Automatically get member ID from the page
       const memberIdEl = document.querySelector(".member-id");
-      const memberId = memberIdEl ? memberIdEl.textContent.trim() : "member";
+      const memberId = memberIdEl?.textContent.trim() || "member";
 
       link.download = `id-card-${memberId}-${new Date()
         .toISOString()
@@ -226,8 +191,8 @@ function setupDownloadButton() {
     } catch (error) {
       console.error("Error generating image:", error);
     } finally {
-      originalStyles.forEach((style) => {
-        style.element.style.visibility = style.visibility;
+      originalStyles.forEach(({ element, visibility }) => {
+        element.style.visibility = visibility;
       });
       profileCard.classList.remove("download-mode", "text-white");
     }
@@ -372,17 +337,13 @@ function showEditForm(memberData) {
 // Function to save edited member data
 async function saveEditedMember(memberId, formData) {
   try {
-    const memberRef = ref(db, `members/${memberId}`);
+    const memberRef = doc(db, "members", memberId);
+    const snapshot = await getDoc(memberRef);
 
-    // Get existing member data first
-    const snapshot = await get(memberRef);
-    if (!snapshot.exists()) {
-      throw new Error("Member not found");
-    }
+    if (!snapshot.exists()) throw new Error("Member not found");
 
-    const existingData = snapshot.val();
+    const existingData = snapshot.data();
 
-    // Prepare updated data
     const updatedData = {
       ...existingData,
       id: formData.id,
@@ -398,12 +359,9 @@ async function saveEditedMember(memberId, formData) {
       },
     };
 
-    // Handle image separately if it was changed
-    if (formData.imageUrl) {
-      updatedData.imageUrl = formData.imageUrl;
-    }
+    if (formData.imageUrl) updatedData.imageUrl = formData.imageUrl;
 
-    await update(memberRef, updatedData);
+    await updateDoc(memberRef, updatedData);
     return true;
   } catch (error) {
     console.error("Error updating member:", error);

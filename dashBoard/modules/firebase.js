@@ -1,25 +1,34 @@
-import { db, ref, set, get, onValue, update, remove } from "../../firebase.js";
+import { db } from "../../firebase.js";
+import {
+  getFirestore,
+  collection,
+  doc,
+  setDoc,
+  getDoc,
+  getDocs,
+  updateDoc,
+  deleteDoc,
+  onSnapshot,
+} from "https://www.gstatic.com/firebasejs/9.19.1/firebase-firestore.js";
 
-// Get members and include Firebase key
+// Collection reference
+const membersCollection = collection(db, "members");
+
+// Get all members (with Firestore doc ID as firebaseKey)
 export async function getMembers() {
-  const snapshot = await get(ref(db, "members"));
-  if (!snapshot.exists()) return [];
-
-  const data = snapshot.val();
-
-  // Add firebaseKey to each member
-  return Object.entries(data).map(([firebaseKey, memberData]) => ({
-    firebaseKey,
-    ...memberData,
+  const snapshot = await getDocs(membersCollection);
+  return snapshot.docs.map((doc) => ({
+    firebaseKey: doc.id,
+    ...doc.data(),
   }));
 }
 
-// Register new member using the ID as Firebase key (unchangeable path)
+// Register new member
 export async function registerMember(member) {
   const safeId = member.id.replace(/\//g, "-");
-  const memberRef = ref(db, `members/${safeId}`);
+  const memberRef = doc(membersCollection, safeId);
 
-  await set(memberRef, {
+  await setDoc(memberRef, {
     ...member,
     paymentStatus: "Unpaid",
     paymentTimestamp: null,
@@ -27,7 +36,7 @@ export async function registerMember(member) {
   });
 }
 
-// Toggle payment status using firebaseKey (not id!)
+// Toggle payment status
 export async function togglePaymentStatus(firebaseKey, currentStatus) {
   if (
     !confirm(
@@ -45,40 +54,40 @@ export async function togglePaymentStatus(firebaseKey, currentStatus) {
         : "Unpaid";
     const paymentTimestamp = Date.now();
 
-    await update(ref(db, `members/${firebaseKey}`), {
+    const memberRef = doc(membersCollection, firebaseKey);
+
+    await updateDoc(memberRef, {
       paymentStatus: newStatus,
       paymentTimestamp,
     });
 
+    // Add to paymentHistory subfield (as a map)
     if (currentStatus === "Unpaid" || currentStatus === "Warning") {
-      await set(
-        ref(db, `members/${firebaseKey}/paymentHistory/${paymentTimestamp}`),
-        {
+      await updateDoc(memberRef, {
+        [`paymentHistory.${paymentTimestamp}`]: {
           timestamp: paymentTimestamp,
-        }
-      );
+        },
+      });
     }
   } catch (error) {
     console.error("Payment error:", error);
   }
 }
 
-// Delete member using firebaseKey
+// Delete member
 export async function deleteMember(firebaseKey) {
   if (!confirm("Are you sure you want to delete this member?")) return;
 
   try {
-    await remove(ref(db, `members/${firebaseKey}`));
+    await deleteDoc(doc(membersCollection, firebaseKey));
   } catch (error) {
     console.error("Delete error:", error);
   }
 }
 
-// Real-time updates on members
+// Real-time member updates
 export function watchMembers(callback) {
-  onValue(ref(db, "members"), (snapshot) => {
-    if (snapshot.exists()) {
-      callback();
-    }
+  return onSnapshot(membersCollection, () => {
+    callback();
   });
 }
