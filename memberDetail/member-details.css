@@ -109,17 +109,14 @@ body {
 }
 
 /* QR Code */
-#qrcode canvas {
-  max-width: 100%;
-  height: auto;
-}
-
 #qrcode {
-  max-width: 200px;
-  max-height: 200px;
-  width: 100%;
-  height: auto;
-  margin: 0 auto;
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
+  padding: 10px;
 }
 
 /* Buttons */
