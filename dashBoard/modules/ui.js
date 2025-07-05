@@ -47,7 +47,7 @@ function createMemberRow(member, index) {
       <td>${member.id}</td>
       <td>
         <a target="_blank" href="../memberDetail/member-details.html?id=${
-          member.firebaseKey
+          member.id
         }">
           ${member.name}
         </a>
